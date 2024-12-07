@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ultralytics_yolo/predict/detect/detected_object.dart';
 
@@ -14,9 +15,25 @@ class ObjectDetectorPainter extends CustomPainter {
     this._strokeWidth = 2.5,
   ]);
 
+  /// Estimate distance from camera to object
+  double estimateDistance({
+    required int screenHeightPx,
+    required double boundingBoxSizePx,
+    required int expectedObjectSizeCm,
+    required double focalLengthCm,
+    double sensorHeightMm = 4.55, // Default 1/2.3 inch
+  }) {
+    // Convert focal length to pixel
+    final focalLengthPx = focalLengthCm * (screenHeightPx / sensorHeightMm);
+    // Estimate the distance
+    final distanceCm = (expectedObjectSizeCm * focalLengthPx) / boundingBoxSizePx;
+    return distanceCm;
+  }
+
   final List<DetectedObject> _detectionResults;
   final List<Color>? _colors;
   final double _strokeWidth;
+  final double focalLength = 2.6; //Average focal length for mobile devices
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -25,6 +42,9 @@ class ObjectDetectorPainter extends CustomPainter {
       ..strokeWidth = _strokeWidth;
     final colors = _colors ?? Colors.primaries;
 
+    //Screen of canvas boxes in pixels
+    const screenHeight = 800;
+
     for (final detectedObject in _detectionResults) {
       final left = detectedObject.boundingBox.left;
       final top = detectedObject.boundingBox.top;
@@ -32,13 +52,21 @@ class ObjectDetectorPainter extends CustomPainter {
       final bottom = detectedObject.boundingBox.bottom;
       final width = detectedObject.boundingBox.width;
       final height = detectedObject.boundingBox.height;
+      final expectedSize = int.parse(detectedObject.size);
+
+      final estimatedDistance = estimateDistance(
+        screenHeightPx: screenHeight,
+        boundingBoxSizePx: height,
+        expectedObjectSizeCm: expectedSize,
+        focalLengthCm: focalLength,
+      );
 
       if (left.isNaN ||
           top.isNaN ||
           right.isNaN ||
           bottom.isNaN ||
           width.isNaN ||
-          height.isNaN) return;
+          height.isNaN ) return;
 
       final opacity = (detectedObject.confidence - 0.2) / (1.0 - 0.2) * 0.9;
 
@@ -70,7 +98,8 @@ class ObjectDetectorPainter extends CustomPainter {
           ),
         )
         ..addText(' ${detectedObject.label} '
-            '${(detectedObject.confidence * 100).toStringAsFixed(1)}\n')
+            '${(detectedObject.confidence * 100).toStringAsFixed(1)} '
+            '${estimatedDistance.toStringAsFixed(1)}cm \n')
         ..pop();
       canvas.drawParagraph(
         builder.build()..layout(ui.ParagraphConstraints(width: right - left)),

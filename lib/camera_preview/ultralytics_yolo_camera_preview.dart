@@ -59,6 +59,7 @@ class _UltralyticsYoloCameraPreviewState
 
   void _onPlatformViewCreated(_) {
     widget.onCameraCreated();
+    _ultralyticsYoloPlatform.setConfidenceThreshold(0.4);
   }
 
   @override

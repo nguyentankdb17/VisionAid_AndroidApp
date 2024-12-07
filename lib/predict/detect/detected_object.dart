@@ -8,6 +8,7 @@ class DetectedObject {
     required this.boundingBox,
     required this.index,
     required this.label,
+    required this.size,
   });
 
   /// Creates a [DetectedObject] from a [json] object.
@@ -22,6 +23,7 @@ class DetectedObject {
       ),
       index: json['index'] as int,
       label: json['label'] as String,
+      size: json['size'] as String,
     );
   }
 
@@ -36,4 +38,7 @@ class DetectedObject {
 
   /// The label of the detection.
   final String label;
+
+  ///Expected real size of the object
+  final String size;
 }

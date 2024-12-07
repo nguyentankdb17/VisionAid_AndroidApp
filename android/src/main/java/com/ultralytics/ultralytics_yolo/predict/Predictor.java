@@ -23,6 +23,7 @@ public abstract class Predictor {
 public static  int INPUT_SIZE = 320;
         protected final Context context;
     public final ArrayList<String> labels = new ArrayList<>();
+    public final ArrayList<String> sizes = new ArrayList<>();
 
     static {
         System.loadLibrary("ultralytics");
@@ -37,6 +38,7 @@ public static  int INPUT_SIZE = 320;
     protected void loadLabels(AssetManager assetManager, String metadataPath) throws IOException {
         InputStream inputStream;
         Yaml yaml = new Yaml();
+        System.out.println("metadataPath: " + metadataPath);
 
         // Local metadata file from Flutter project
         if (metadataPath.startsWith("flutter_assets")) {
@@ -48,17 +50,27 @@ public static  int INPUT_SIZE = 320;
         }
 
         Map<String, Object> data = yaml.load(inputStream);
+        System.out.println(data);
         Map<Integer, String> names = ((Map<Integer, String>) data.get("names"));
+        if (names == null) {
+            System.out.println("Names data is missing from YAML!");
+        }
+        Map<Integer, String> expectedSizes = ((Map<Integer, String>) data.get("sizes"));
+        if (expectedSizes == null) {
+            System.out.println("Sizes data is missing from YAML!");
+        }
 
         List<Integer> imgszArray = (List<Integer>) data.get("imgsz");    
         if(imgszArray!=null&&imgszArray.size()==2){
-            
             INPUT_SIZE = imgszArray.get(0)>=imgszArray.get(1)?imgszArray.get(0):imgszArray.get(1);
             System.out.println("INPUT_SIZE:"+ INPUT_SIZE);
         }  
 
         labels.clear();
         labels.addAll(names.values());
+
+        sizes.clear();
+        sizes.addAll(expectedSizes.values());
 
         inputStream.close();
     }

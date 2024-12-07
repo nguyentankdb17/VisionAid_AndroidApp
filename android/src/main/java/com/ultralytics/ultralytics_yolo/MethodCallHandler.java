@@ -194,6 +194,7 @@ public class MethodCallHandler implements MethodChannel.MethodCallHandler {
                     float confidence = obj[4];
                     int index = (int) obj[5];
                     String label = index < predictor.labels.size() ? predictor.labels.get(index) : "";
+                    String size = index < predictor.sizes.size() ? predictor.sizes.get(index) : "";
 
                     objectMap.put("x", x);
                     objectMap.put("y", y);
@@ -202,6 +203,7 @@ public class MethodCallHandler implements MethodChannel.MethodCallHandler {
                     objectMap.put("confidence", confidence);
                     objectMap.put("index", index);
                     objectMap.put("label", label);
+                    objectMap.put("size" , size);
 
                     objects.add(objectMap);
                 }
@@ -299,6 +301,7 @@ public class MethodCallHandler implements MethodChannel.MethodCallHandler {
                     float confidence = obj[4];
                     int index = (int) obj[5];
                     String label = index < predictor.labels.size() ? predictor.labels.get(index) : "";
+                    String size = index < predictor.sizes.size() ? predictor.sizes.get(index) : "";
 
                     objectMap.put("x", x);
                     objectMap.put("y", y);
@@ -307,6 +310,7 @@ public class MethodCallHandler implements MethodChannel.MethodCallHandler {
                     objectMap.put("confidence", confidence);
                     objectMap.put("index", index);
                     objectMap.put("label", label);
+                    objectMap.put("size", size);
 
                     objects.add(objectMap);
                 }

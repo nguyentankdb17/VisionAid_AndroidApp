@@ -9,12 +9,14 @@ public class DetectedObject {
     public final RectF boundingBox;
     public final int index;
     public final String label;
+    public final String size; //Expected size of object
 
-    public DetectedObject(final Float confidence, final RectF boundingBox, final int index, final String label) {
+    public DetectedObject(final Float confidence, final RectF boundingBox, final int index, final String label, final String size) {
         this.confidence = confidence;
         this.boundingBox = boundingBox;
         this.index = index;
         this.label = label;
+        this.size = size;
     }
 
     @Keep
@@ -35,6 +37,11 @@ public class DetectedObject {
     @Keep
     public String getLabel() {
         return label;
+    }
+
+    @Keep
+    public String getSize() {
+        return size;
     }
 }
 
