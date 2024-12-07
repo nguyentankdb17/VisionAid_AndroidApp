@@ -30,3 +30,4 @@ migrate_working_dir/
 build/
 ios/
 .github/
+node_modules/
