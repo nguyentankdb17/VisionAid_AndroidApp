@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public abstract class YoloModel {
     public final ArrayList<String> labels = new ArrayList<>();
+    public final ArrayList<String> sizes = new ArrayList<>();
     public String task;
     public String format;
 }
