@@ -12,13 +12,6 @@ abstract class Predictor {
   /// The platform instance used to run inference.
   final ultralyticsYoloPlatform = UltralyticsYoloPlatform.instance;
 
-  /// The stream of the inference time.
-  Stream<double>? get inferenceTime =>
-      ultralyticsYoloPlatform.inferenceTimeStream;
-
-  /// The stream of the frames per second (FPS) rate.
-  Stream<double>? get fpsRate => ultralyticsYoloPlatform.fpsRateStream;
-
   /// Loads the model.
   Future<String?> loadModel({bool useGpu = false}) =>
       ultralyticsYoloPlatform.loadModel(model.toJson(), useGpu: useGpu);

@@ -1,5 +1,4 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:ultralytics_yolo/predict/classify/classification_result.dart';
 import 'package:ultralytics_yolo/predict/detect/detected_object.dart';
 import 'package:ultralytics_yolo/ultralytics_yolo_platform_channel.dart';
 
@@ -85,27 +84,5 @@ abstract class UltralyticsYoloPlatform extends PlatformInterface {
   /// Detect objects in the given [imagePath].
   Future<List<DetectedObject?>?> detectImage(String imagePath) {
     throw UnimplementedError('detectImage has not been implemented.');
-  }
-
-  /// Stream of classification results.
-  Stream<List<ClassificationResult?>?> get classificationResultStream {
-    throw UnimplementedError(
-      'classificationResultStream has not been implemented.',
-    );
-  }
-
-  /// Classify the given [imagePath].
-  Future<List<ClassificationResult?>?> classifyImage(String imagePath) {
-    throw UnimplementedError('predictImage has not been implemented.');
-  }
-
-  /// Stream of inference time.
-  Stream<double>? get inferenceTimeStream {
-    throw UnimplementedError('inferenceTimeStream has not been implemented.');
-  }
-
-  /// Stream of frames per second (FPS) rate.
-  Stream<double>? get fpsRateStream {
-    throw UnimplementedError('fpsRateStream has not been implemented.');
   }
 }

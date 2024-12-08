@@ -39,7 +39,7 @@ public class TfliteDetector extends Detector {
         System.loadLibrary("ultralytics");
     }
 
-    private static final long FPS_INTERVAL_MS = 1000; // Update FPS every 1000 milliseconds (1 second)
+    private static final long FPS_INTERVAL_MS = 10000; // Update FPS every 1000 milliseconds (1 second)
     private static final int NUM_BYTES_PER_CHANNEL = 4;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Matrix transformationMatrix;

@@ -17,7 +17,7 @@ class UltralyticsYoloCameraPreview extends StatefulWidget {
     required this.controller,
     required this.onCameraCreated,
     this.boundingBoxesColorList = const [Colors.lightBlueAccent],
-    this.classificationOverlay,
+    // this.classificationOverlay,
     this.loadingPlaceholder,
     super.key,
   });
@@ -28,8 +28,8 @@ class UltralyticsYoloCameraPreview extends StatefulWidget {
   /// The list of colors used to draw the bounding boxes.
   final List<Color> boundingBoxesColorList;
 
-  /// The classification overlay widget.
-  final BaseClassificationOverlay? classificationOverlay;
+  // /// The classification overlay widget.
+  // final BaseClassificationOverlay? classificationOverlay;
 
   /// The controller for the camera preview.
   final UltralyticsYoloCameraController controller;
@@ -116,33 +116,37 @@ class _UltralyticsYoloCameraPreviewState
                     ) {
                       if (snapshot.data == null) return Container();
 
-                      return CustomPaint(
-                        painter: ObjectDetectorPainter(
-                          snapshot.data! as List<DetectedObject>,
-                          widget.boundingBoxesColorList,
-                          widget.controller.value.strokeWidth,
+                      return SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: CustomPaint(
+                          painter: ObjectDetectorPainter(
+                            snapshot.data! as List<DetectedObject>,
+                            widget.boundingBoxesColorList,
+                            widget.controller.value.strokeWidth,
+                          ),
                         ),
                       );
                     },
                   );
-                case ImageClassifier:
-                  return widget.classificationOverlay ??
-                      StreamBuilder(
-                        stream: (widget.predictor! as ImageClassifier)
-                            .classificationResultStream,
-                        builder: (context, snapshot) {
-                          final classificationResults = snapshot.data;
-
-                          if (classificationResults == null ||
-                              classificationResults.isEmpty) {
-                            return Container();
-                          }
-
-                          return ClassificationResultOverlay(
-                            classificationResults: classificationResults,
-                          );
-                        },
-                      );
+                // case ImageClassifier:
+                //   return widget.classificationOverlay ??
+                //       StreamBuilder(
+                //         stream: (widget.predictor! as ImageClassifier)
+                //             .classificationResultStream,
+                //         builder: (context, snapshot) {
+                //           final classificationResults = snapshot.data;
+                //
+                //           if (classificationResults == null ||
+                //               classificationResults.isEmpty) {
+                //             return Container();
+                //           }
+                //
+                //           return ClassificationResultOverlay(
+                //             classificationResults: classificationResults,
+                //           );
+                //         },
+                //       );
                 default:
                   return Container();
               }

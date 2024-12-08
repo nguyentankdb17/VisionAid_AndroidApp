@@ -1,7 +1,5 @@
 import 'dart:math';
 import 'dart:ui' as ui;
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ultralytics_yolo/predict/detect/detected_object.dart';
 
@@ -17,7 +15,7 @@ class ObjectDetectorPainter extends CustomPainter {
 
   /// Estimate distance from camera to object
   double estimateDistance({
-    required int screenHeightPx,
+    required double screenHeightPx,
     required double boundingBoxSizePx,
     required int expectedObjectSizeCm,
     required double focalLengthCm,
@@ -30,10 +28,24 @@ class ObjectDetectorPainter extends CustomPainter {
     return distanceCm;
   }
 
+  /// Find the relative position on the screen
+  String determinePosition(double objectX, double screenWidth) {
+    final screenWidthHalf = screenWidth / 2;
+    if (objectX < screenWidthHalf) {
+      return 'left';
+    } else if (objectX > screenWidthHalf) {
+      return 'right';
+    } else {
+      return 'center';
+    }
+  }
+
   final List<DetectedObject> _detectionResults;
   final List<Color>? _colors;
   final double _strokeWidth;
-  final double focalLength = 2.6; //Average focal length for mobile devices
+
+  /// Average focal length for mobile devices
+  final double focalLength = 2.6;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -43,7 +55,7 @@ class ObjectDetectorPainter extends CustomPainter {
     final colors = _colors ?? Colors.primaries;
 
     //Screen of canvas boxes in pixels
-    const screenHeight = 800;
+    final screenHeight = size.height ;
 
     for (final detectedObject in _detectionResults) {
       final left = detectedObject.boundingBox.left;
@@ -54,13 +66,6 @@ class ObjectDetectorPainter extends CustomPainter {
       final height = detectedObject.boundingBox.height;
       final expectedSize = int.parse(detectedObject.size);
 
-      final estimatedDistance = estimateDistance(
-        screenHeightPx: screenHeight,
-        boundingBoxSizePx: height,
-        expectedObjectSizeCm: expectedSize,
-        focalLengthCm: focalLength,
-      );
-
       if (left.isNaN ||
           top.isNaN ||
           right.isNaN ||
@@ -68,9 +73,17 @@ class ObjectDetectorPainter extends CustomPainter {
           width.isNaN ||
           height.isNaN ) return;
 
+      final estimatedDistance = estimateDistance(
+        screenHeightPx: screenHeight,
+        boundingBoxSizePx: height,
+        expectedObjectSizeCm: expectedSize,
+        focalLengthCm: focalLength,
+      );
+
+      final centerX = (left + right) / 2;
+
       final opacity = (detectedObject.confidence - 0.2) / (1.0 - 0.2) * 0.9;
 
-      //
       // DRAW
       // Rect
       final index = detectedObject.index % colors.length;
@@ -99,6 +112,7 @@ class ObjectDetectorPainter extends CustomPainter {
         )
         ..addText(' ${detectedObject.label} '
             '${(detectedObject.confidence * 100).toStringAsFixed(1)} '
+            '${determinePosition(centerX, size.width)} '
             '${estimatedDistance.toStringAsFixed(1)}cm \n')
         ..pop();
       canvas.drawParagraph(
