@@ -116,11 +116,15 @@ class _UltralyticsYoloCameraPreviewState
                     ) {
                       if (snapshot.data == null) return Container();
 
-                      return CustomPaint(
-                        painter: ObjectDetectorPainter(
-                          snapshot.data! as List<DetectedObject>,
-                          widget.boundingBoxesColorList,
-                          widget.controller.value.strokeWidth,
+                      return SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: CustomPaint(
+                          painter: ObjectDetectorPainter(
+                            snapshot.data! as List<DetectedObject>,
+                            widget.boundingBoxesColorList,
+                            widget.controller.value.strokeWidth,
+                          ),
                         ),
                       );
                     },
