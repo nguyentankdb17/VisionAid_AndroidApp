@@ -17,7 +17,7 @@ class UltralyticsYoloCameraPreview extends StatefulWidget {
     required this.controller,
     required this.onCameraCreated,
     this.boundingBoxesColorList = const [Colors.lightBlueAccent],
-    this.classificationOverlay,
+    // this.classificationOverlay,
     this.loadingPlaceholder,
     super.key,
   });
@@ -28,8 +28,8 @@ class UltralyticsYoloCameraPreview extends StatefulWidget {
   /// The list of colors used to draw the bounding boxes.
   final List<Color> boundingBoxesColorList;
 
-  /// The classification overlay widget.
-  final BaseClassificationOverlay? classificationOverlay;
+  // /// The classification overlay widget.
+  // final BaseClassificationOverlay? classificationOverlay;
 
   /// The controller for the camera preview.
   final UltralyticsYoloCameraController controller;
@@ -125,24 +125,24 @@ class _UltralyticsYoloCameraPreviewState
                       );
                     },
                   );
-                case ImageClassifier:
-                  return widget.classificationOverlay ??
-                      StreamBuilder(
-                        stream: (widget.predictor! as ImageClassifier)
-                            .classificationResultStream,
-                        builder: (context, snapshot) {
-                          final classificationResults = snapshot.data;
-
-                          if (classificationResults == null ||
-                              classificationResults.isEmpty) {
-                            return Container();
-                          }
-
-                          return ClassificationResultOverlay(
-                            classificationResults: classificationResults,
-                          );
-                        },
-                      );
+                // case ImageClassifier:
+                //   return widget.classificationOverlay ??
+                //       StreamBuilder(
+                //         stream: (widget.predictor! as ImageClassifier)
+                //             .classificationResultStream,
+                //         builder: (context, snapshot) {
+                //           final classificationResults = snapshot.data;
+                //
+                //           if (classificationResults == null ||
+                //               classificationResults.isEmpty) {
+                //             return Container();
+                //           }
+                //
+                //           return ClassificationResultOverlay(
+                //             classificationResults: classificationResults,
+                //           );
+                //         },
+                //       );
                 default:
                   return Container();
               }

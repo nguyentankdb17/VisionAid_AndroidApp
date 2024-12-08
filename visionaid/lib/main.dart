@@ -173,13 +173,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<ObjectDetector> _initObjectDetectorWithLocalModel() async {
-    // final modelPath = await _copy('assets/yolov8n.mlmodel');
-    // final model = LocalYoloModel(
-    //   id: '',
-    //   task: Task.detect,
-    //   format: Format.coreml,
-    //   modelPath: modelPath,
-    // );
     final modelPath = await _copy('assets/yolov8n_int8.tflite');
     final metadataPath = await _copy('assets/metadata.yaml');
     final model = LocalYoloModel(
@@ -190,29 +183,6 @@ class _MyAppState extends State<MyApp> {
       metadataPath: metadataPath,
     );
     return ObjectDetector(model: model);
-  }
-
-  Future<ImageClassifier> _initImageClassifierWithLocalModel() async {
-    final modelPath = await _copy('assets/yolov8n-cls.mlmodel');
-    final model = LocalYoloModel(
-      id: '',
-      task: Task.classify,
-      format: Format.coreml,
-      modelPath: modelPath,
-    );
-
-    // final modelPath = await _copy('assets/yolov8n-cls.bin');
-    // final paramPath = await _copy('assets/yolov8n-cls.param');
-    // final metadataPath = await _copy('assets/metadata-cls.yaml');
-    // final model = LocalYoloModel(
-    //   id: '',
-    //   task: Task.classify,
-    //   modelPath: modelPath,
-    //   paramPath: paramPath,
-    //   metadataPath: metadataPath,
-    // );
-
-    return ImageClassifier(model: model);
   }
 
   Future<String> _copy(String assetPath) async {
@@ -247,34 +217,3 @@ class _MyAppState extends State<MyApp> {
     }
   }
 }
-
-// class Times extends StatelessWidget {
-//   const Times({
-//     super.key,
-//     required this.inferenceTime,
-//     required this.fpsRate,
-//   });
-//
-//   final double? inferenceTime;
-//   final double? fpsRate;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Align(
-//         alignment: Alignment.bottomCenter,
-//         child: Container(
-//             margin: const EdgeInsets.all(20),
-//             padding: const EdgeInsets.all(20),
-//             decoration: const BoxDecoration(
-//               borderRadius: BorderRadius.all(Radius.circular(10)),
-//               color: Colors.black54,
-//             ),
-//             child: Text(
-//               '${(inferenceTime ?? 0).toStringAsFixed(1)} ms  -  ${(fpsRate ?? 0).toStringAsFixed(1)} FPS',
-//               style: const TextStyle(color: Colors.white70),
-//             )),
-//       ),
-//     );
-//   }
-// }

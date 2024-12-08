@@ -2,7 +2,7 @@ import 'package:ultralytics_yolo/predict/detect/detected_object.dart';
 import 'package:ultralytics_yolo/predict/predictor.dart';
 import 'package:ultralytics_yolo/yolo_model.dart';
 
-/// A predictor for object detection.
+/// A predictor for object detection feature.
 class ObjectDetector extends Predictor {
   /// Constructor to create an instance of [ObjectDetector].
   ObjectDetector({required YoloModel model}) : super(model);

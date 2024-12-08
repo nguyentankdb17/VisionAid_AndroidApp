@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:ultralytics_yolo/predict/classify/classification_result.dart';
 import 'package:ultralytics_yolo/predict/detect/detected_object.dart';
-
 import 'package:ultralytics_yolo/ultralytics_yolo_platform_interface.dart';
 
 /// An implementation of [UltralyticsYoloPlatform] that uses method channels.
@@ -15,15 +13,6 @@ class PlatformChannelUltralyticsYolo implements UltralyticsYoloPlatform {
   @visibleForTesting
   final predictionResultsEventChannel =
       const EventChannel('ultralytics_yolo_prediction_results');
-
-  /// The event channel used to stream the inference time
-  @visibleForTesting
-  final inferenceTimeEventChannel =
-      const EventChannel('ultralytics_yolo_inference_time');
-
-  /// The event channel used to stream the inference time
-  @visibleForTesting
-  final fpsRateEventChannel = const EventChannel('ultralytics_yolo_fps_rate');
 
   @override
   Future<String?> loadModel(
@@ -93,51 +82,6 @@ class PlatformChannelUltralyticsYolo implements UltralyticsYoloPlatform {
           return objects;
         },
       );
-
-  @override
-  Stream<List<ClassificationResult?>?> get classificationResultStream =>
-      predictionResultsEventChannel.receiveBroadcastStream().map(
-        (result) {
-          final objects = <ClassificationResult>[];
-          result = result as List;
-
-          for (dynamic json in result) {
-            objects.add(ClassificationResult.fromJson(
-                Map<String, dynamic>.from(json as Map)));
-          }
-
-          return objects;
-        },
-      );
-
-  @override
-  Stream<double>? get inferenceTimeStream => inferenceTimeEventChannel
-      .receiveBroadcastStream()
-      .map((time) => (time as num).toDouble());
-
-  @override
-  Stream<double>? get fpsRateStream => fpsRateEventChannel
-      .receiveBroadcastStream()
-      .map((rate) => (rate as num).toDouble());
-
-  @override
-  Future<List<ClassificationResult?>?> classifyImage(String imagePath) async {
-    final result =
-        await methodChannel.invokeMethod<List<Object?>>('classifyImage', {
-      'imagePath': imagePath,
-    }).catchError((_) {
-      return <ClassificationResult?>[];
-    });
-
-    final objects = <ClassificationResult>[];
-
-    result?.forEach((json) {
-      objects.add(ClassificationResult.fromJson(
-          Map<String, dynamic>.from(json as Map)));
-    });
-
-    return objects;
-  }
 
   @override
   Future<List<DetectedObject?>?> detectImage(String imagePath) async {
