@@ -10,7 +10,7 @@ class ObjectDetectorPainter extends CustomPainter {
   ObjectDetectorPainter(
     this._detectionResults, [
     this._colors,
-    this._strokeWidth = 2.5,
+    this._strokeWidth = 4,
   ]);
 
   /// Estimate distance from camera to object
@@ -29,8 +29,11 @@ class ObjectDetectorPainter extends CustomPainter {
   }
 
   /// Find the relative position on the screen
-  String determinePosition(double objectX, double screenWidth) {
+  String determinePosition(double objectX, double objectWidth, double screenWidth){
     final screenWidthHalf = screenWidth / 2;
+    if (objectWidth > 0.5 * screenWidth) {
+      return 'center';
+    }
     if (objectX < screenWidthHalf) {
       return 'left';
     } else if (objectX > screenWidthHalf) {
@@ -112,7 +115,7 @@ class ObjectDetectorPainter extends CustomPainter {
         )
         ..addText(' ${detectedObject.label} '
             '${(detectedObject.confidence * 100).toStringAsFixed(1)} '
-            '${determinePosition(centerX, size.width)} '
+            '${determinePosition(centerX, width, size.width)} '
             '${estimatedDistance.toStringAsFixed(1)}cm \n')
         ..pop();
       canvas.drawParagraph(
