@@ -16,7 +16,7 @@ class UltralyticsYoloCameraPreview extends StatefulWidget {
     required this.predictor,
     required this.controller,
     required this.onCameraCreated,
-    this.boundingBoxesColorList = const [Colors.lightBlueAccent],
+    this.boundingBoxesColorList = const [Colors.lightGreenAccent],
     // this.classificationOverlay,
     this.loadingPlaceholder,
     super.key,
