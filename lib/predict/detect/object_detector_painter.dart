@@ -1,8 +1,9 @@
 import 'dart:math';
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
-import 'package:ultralytics_yolo/predict/detect/detected_object.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:ultralytics_yolo/predict/detect/detected_object.dart';
 
 /// A painter used to draw the detected objects on the screen.
 
@@ -47,10 +48,10 @@ class ObjectDetectorPainter extends CustomPainter {
   final List<Color>? _colors;
   final double _strokeWidth;
 
-  // Map để lưu trữ các đối tượng đã phát hiện, dùng tên hoặc id của đối tượng làm key
+  /// Map để lưu trữ các đối tượng đã phát hiện, dùng tên hoặc id của đối tượng làm key
   final Map<String, String> _previousDetectedObjects = {};
 
-  // Getter trả về Map chứa các đối tượng đã phát hiện
+  /// Getter trả về Map chứa các đối tượng đã phát hiện
   Map<String, String> get detectedObjects => _previousDetectedObjects;
 
   /// Average focal length for mobile devices

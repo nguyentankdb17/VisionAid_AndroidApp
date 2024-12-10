@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:ultralytics_yolo/predict/detect/object_detector_painter.dart';
 
 class Command {
   static final all = [describe, search];
@@ -14,9 +15,9 @@ class Utils {
   // Sửa phương thức scanText thành không tĩnh và truyền painter vào
   Future<void> scanText(String rawText, ObjectDetectorPainter painter) async {
     final text = rawText.toLowerCase();
+    Map<String, String> objectsInfor = painter.detectedObjects;
 
     if (text.contains(Command.describe)) {
-      Map<String, String> objectsInfor = painter.detectedObject;
       if (objectsInfor.isNotEmpty) {
         // Lặp qua các key-value trong Map
         objectsInfor.forEach((key, value) {
