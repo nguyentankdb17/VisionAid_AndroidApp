@@ -36,7 +36,6 @@ class _HomePageState extends State<HomePage> {
   final controller = UltralyticsYoloCameraController();
   final speech = const Speech();
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

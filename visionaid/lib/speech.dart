@@ -97,40 +97,9 @@ class _SpeechState extends State<Speech> {
     });
   }
 
-  // void initStt() async {
-  //   _speechToText = SpeechToText();
-  //   // _speechEnabled = await _speechToText.initialize();
-  // }
   Future<dynamic> _getLanguages() async => await flutterTts.getLanguages;
 
   Future<dynamic> _getEngines() async => await flutterTts.getEngines;
-
-  ///
-  // void startListening() async {
-  //   microphoneIcon = Icons.mic;
-  //   await flutterTts.speak("Listening.");
-  //   await _speechToText.listen(
-  //       onResult: onSpeechResult,
-  //       listenFor: const Duration(seconds: 10),
-  //       pauseFor: const Duration(seconds: 3));
-  //   setState(() {
-  //     confidenceLevel = 0;
-  //   });
-  //   if (_speechToText.isListening == false) {
-  //     microphoneIcon = Icons.mic_off;
-  //     await flutterTts.speak("Stop.");
-  //   }
-  // }
-
-  // void stopListening() async {
-  //   microphoneIcon = Icons.mic_off;
-  //   await _speechToText.stop();
-  //   await flutterTts.speak("Stop.");
-  //   setState(() {
-  //
-  //     wordsSpoken = "";
-  //   });
-  // }
 
   void extractTargetObject(String spokenText) {
     String tmpText = spokenText.toLowerCase();
@@ -225,31 +194,7 @@ class _SpeechState extends State<Speech> {
   }
 
   @override
-  // Widget build(BuildContext context) {
-  //   return Stack(
-  //     alignment: Alignment.center,
-  //     children: [
-  //       Positioned(
-  //         bottom: 10,
-  //           child: ElevatedButton(
-  //               onPressed: () {
-  //                 _speechToText.isNotListening ? startListening() : stopListening();
-  //               },
-  //               style: ElevatedButton.styleFrom(
-  //                   backgroundColor: Colors.white,
-  //                   fixedSize: const Size(150, 150),
-  //                   shape: const CircleBorder(eccentricity: 1)
-  //               ),
-  //               child: Icon(
-  //                 microphoneIcon,
-  //                 color: Colors.red.shade400,
-  //                 size: 100,
-  //               )
-  //           )
-  //       )
-  //     ],
-  //   );
-  // }
+
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
