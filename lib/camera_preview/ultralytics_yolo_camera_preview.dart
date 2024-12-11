@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:avatar_glow/avatar_glow.dart';
@@ -68,17 +69,33 @@ class _UltralyticsYoloCameraPreviewState
   double _screenHeight = 0;
 
   /// Map để lưu trữ các đối tượng đã phát hiện, dùng tên hoặc id của đối tượng làm key
-  final Map<String, String> _previousDetectedObjects = {};
+  final Map<String, List<String>> _previousDetectedObjects = {};
 
   // Getter trả về Map chứa các đối tượng đã phát hiện
-  Map<String, String> get detectedObjects => _previousDetectedObjects;
+  Map<String, List<String>> get detectedObjects => _previousDetectedObjects;
 
   /// Average focal length for mobile devices
   final double focalLength = 2.6;
 
+  /// Find the relative position on the screen
+  String determinePosition(double objectX, double objectWidth, double screenWidth) {
+    final screenWidthHalf = screenWidth / 2;
+    if (objectWidth > 0.5 * screenWidth) {
+      return 'center';
+    }
+    if (objectX < screenWidthHalf) {
+      return 'left';
+    } else if (objectX > screenWidthHalf) {
+      return 'right';
+    } else {
+      return 'center';
+    }
+  }
+
   bool _isListening = false;
 
   String _text = 'Press the button and start speaking';
+
 
   void _onPlatformViewCreated(_) {
     widget.onCameraCreated();
@@ -217,11 +234,11 @@ class _UltralyticsYoloCameraPreviewState
             ),
             () {
               final estimator = DistanceEstimator();
-              var allDetectedText = '';
 
               for (final detectedObject in _resultDetections) {
                 final left = detectedObject.boundingBox.left;
                 final right = detectedObject.boundingBox.right;
+                final width = detectedObject.boundingBox.width;
                 final height = detectedObject.boundingBox.height;
                 final expectedSize = int.parse(detectedObject.size);
                 final centerX = (left + right) / 2;
@@ -252,10 +269,10 @@ class _UltralyticsYoloCameraPreviewState
                 // }
 
                 // Gom tất cả các mô tả vào chuỗi
-                allDetectedText += objectInfo;
+                detectedObjects[detectedObject.label] = [estimatedDistance.toStringAsFixed(0), determinePosition(centerX, width, MediaQuery.of(context).size.width)];
               }
 
-              Utils.scanText(_text, allDetectedText);
+              Utils.scanText(_text, detectedObjects);
               return speech();
             }
             (),
@@ -274,7 +291,7 @@ class _UltralyticsYoloCameraPreviewState
                 AvatarGlow(
                     animate: _isListening,
                     glowColor: Theme.of(context).primaryColor,
-                    duration: const Duration(seconds: 2),
+                    duration: const Duration(seconds: 3),
                     repeat: _isListening,
                     child: SizedBox(
                       width: 150,
@@ -306,15 +323,25 @@ class _UltralyticsYoloCameraPreviewState
     );
   }
 
-  Future toggleRecording() => SpeechToTextApi.toggleRecording(
-      onResult: (text) => setState(() => _text = text),
+  Future<void> toggleRecording() => SpeechToTextApi.toggleRecording(
+      onResult: (text) {
+        setState(() {
+          _text = text;
+        });
+      },
       onListening: (isListening) {
-        setState(() => _isListening = isListening);
+        setState((){
+          _isListening = isListening;
+          if (isListening) {
+            _text = '';
+          }
+        });
       });
 }
 
+/// Estimate distance from camera to object
 class DistanceEstimator {
-  /// Estimate distance from camera to object
+  /// Result
   double estimateDistance({
     required double screenHeightPx,
     required double boundingBoxSizePx,

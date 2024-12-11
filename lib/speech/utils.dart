@@ -1,20 +1,26 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:ultralytics_yolo/predict/detect/object_detector_painter.dart';
 
 class Command {
   static final all = [describe, search];
 
   static const describe = 'describe';
-  static const search = 'search for';
+  static const search = 'find the';
+}
+
+class TTS {
+  static FlutterTts get flutterTts {
+    final tts = FlutterTts();
+    tts..setSpeechRate(0.3)
+    ..awaitSpeakCompletion(true);
+    return tts;
+  }
 }
 
 class Utils {
-  static final FlutterTts flutterTts = FlutterTts(); // Chuyển sang đối tượng không tĩnh
+  /// Text to speech
+  static final FlutterTts flutterTts = TTS.flutterTts;// Chuyển sang đối tượng không tĩnh
 
-
-
-  static Future<void> scanText(String rawText, String objects) async {
+  static Future<void> scanText(String rawText, Map<String, List<String>> objects) async {
     final text = rawText.toLowerCase();
     // Map<String, String> objectsInfor = painter.detectedObjects;
 
@@ -26,12 +32,28 @@ class Utils {
       //     flutterTts.speak(value); // Hoặc có thể làm gì đó với giá trị này
       //   });
       if (objects.isNotEmpty) {
-        await flutterTts.speak(objects);
-      } else {
-        await flutterTts.speak("I see nothing");
+        await flutterTts.speak('There are ');
+        for (final key in objects.keys) {
+          await flutterTts.speak(key);
+        }
+        await flutterTts.speak('in front of you');
+      }
+      else {
+        await flutterTts.speak("I can't detect anything in front of you");
       }
     } else if (text.contains(Command.search)) {
       final object = _getTextAfterCommand(text: text, command: Command.search);
+      if (objects.containsKey(object)) {
+        final distance = objects[object]![0];
+        final position = objects[object]![1];
+        if (position=='center') {
+          await flutterTts.speak('$object is in front of you, about $distance centimeters away from you');
+        } else {
+          await flutterTts.speak('$object is on your $position hand, about $distance centimeters away from you ');
+        }
+      } else {
+        await flutterTts.speak('$object not found');
+      }
       // Kiểm tra xem objectToFind có trong Map không
       // if (objectsInfor.containsKey(object)) {
       //   // Nếu có, lấy giá trị tương ứng và đọc
