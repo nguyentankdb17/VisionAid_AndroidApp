@@ -1,6 +1,5 @@
 import 'dart:io' as io;
 
-import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
@@ -8,8 +7,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ultralytics_yolo/ultralytics_yolo.dart';
 import 'package:ultralytics_yolo/yolo_model.dart';
-import 'package:avatar_glow/avatar_glow.dart';
-import 'speech.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +15,8 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  Widget build(BuildContext) {
+  @override
+  Widget build(BuildContext context) {
     return const MaterialApp(
       home: HomePage(),
     );
@@ -34,7 +32,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final controller = UltralyticsYoloCameraController();
-  final speech = const Speech();
+
+  late UltralyticsYoloCameraPreview preview;
 
   @override
   Widget build(BuildContext context) {
@@ -58,14 +57,13 @@ class _HomePageState extends State<HomePage> {
                     ? Container()
                     : Stack(
                   children: [
-                    UltralyticsYoloCameraPreview(
+                    preview = UltralyticsYoloCameraPreview(
                       controller: controller,
                       predictor: predictor,
                       onCameraCreated: () {
                         predictor.loadModel(useGpu: true);
                       },
                     ),
-                    speech
                   ],
                 );
               },

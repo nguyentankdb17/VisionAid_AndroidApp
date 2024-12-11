@@ -4,7 +4,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:ultralytics_yolo/predict/detect/detected_object.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 /// A painter used to draw the detected objects on the screen.
 
@@ -34,8 +33,11 @@ class ObjectDetectorPainter extends CustomPainter {
   }
 
   /// Find the relative position on the screen
-  String determinePosition(double objectX, double screenWidth) {
+  String determinePosition(double objectX, double objectWidth, double screenWidth) {
     final screenWidthHalf = screenWidth / 2;
+    if (objectWidth > 0.5 * screenWidth) {
+      return 'center';
+    }
     if (objectX < screenWidthHalf) {
       return 'left';
     } else if (objectX > screenWidthHalf) {
@@ -52,8 +54,11 @@ class ObjectDetectorPainter extends CustomPainter {
   /// Map để lưu trữ các đối tượng đã phát hiện, dùng tên hoặc id của đối tượng làm key
   final Map<String, String> _previousDetectedObjects = {};
 
-  // Getter trả về Map chứa các đối tượng đã phát hiện
+  /// Getter trả về Map chứa các đối tượng đã phát hiện
   Map<String, String> get detectedObjects => _previousDetectedObjects;
+
+  /// Set để lưu các đối tượng đã được cảnh báo
+  final List<String> _warnedObjects = [];
 
   /// Average focal length for mobile devices
   final double focalLength = 2.6;
@@ -112,17 +117,24 @@ class ObjectDetectorPainter extends CustomPainter {
       // ADD TEXT
       final objectInfo = ' ${detectedObject.label} '
           '${(detectedObject.confidence * 100).toStringAsFixed(1)} '
-          '${determinePosition(centerX, size.width)} '
+          '${determinePosition(centerX, width, size.width)} '
           '${estimatedDistance.toStringAsFixed(1)}cm \n';
 
       // Đọc nội dung qua Text-to-Speech
       //_flutterTts.speak(text);
 
-      if (estimatedDistance < 70) {
-        _flutterTts.speak("Warning: ${detectedObject.label} is too close! $objectInfo");
-      }
+      // if (estimatedDistance < 30) {
+      //   // Tạo một key duy nhất cho mỗi đối tượng
+      //   final objectKey = detectedObject.label;
+      //
+      //   // Chỉ cảnh báo nếu đối tượng chưa được cảnh báo
+      //   if (!_warnedObjects.contains(objectKey)) {
+      //     _warnedObjects.add(objectKey); // Đánh dấu đã cảnh báo
+      //     _flutterTts.speak("Warning: ${detectedObject.label} is too close! It's only ${estimatedDistance.toStringAsFixed(1)}} centimeters away from you");
+      //   }
+      // }
       // Kiểm tra xem đối tượng này đã được phát hiện trước đó chưa
-      if (_previousDetectedObjects.containsKey(detectedObject)) {
+      if (_previousDetectedObjects.containsKey(detectedObject.label)) {
         // Nếu đã tồn tại và thông tin thay đổi, thì cập nhật lại
         if (_previousDetectedObjects[detectedObject.label] != objectInfo) {
           // Cập nhật thông tin mới
