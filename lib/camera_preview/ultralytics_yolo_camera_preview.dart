@@ -234,6 +234,7 @@ class _UltralyticsYoloCameraPreviewState
             ),
             () {
               final estimator = DistanceEstimator();
+              detectedObjects.clear();
 
               for (final detectedObject in _resultDetections) {
                 final left = detectedObject.boundingBox.left;
