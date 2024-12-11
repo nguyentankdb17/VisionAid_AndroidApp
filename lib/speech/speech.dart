@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:avatar_glow/avatar_glow.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:ultralytics_yolo/speech/speech_to_text_api.dart';
@@ -28,7 +28,7 @@ class _SpeechState extends State<Speech> {
 
   ///
   bool _isListening = false;
-  String _text = 'Press the button and start speaking';
+
 
   TtsState ttsState = TtsState.stopped;
 
@@ -41,7 +41,6 @@ class _SpeechState extends State<Speech> {
   initState() {
     super.initState();
     initTts();
-    // initStt();
   }
 
   dynamic initTts() {
@@ -130,54 +129,10 @@ class _SpeechState extends State<Speech> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Positioned(
-          bottom: 10,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                AvatarGlow(
-                    animate: _isListening,
-                    glowColor: Theme.of(context).primaryColor,
-                    duration: const Duration(seconds: 2),
-                    repeat: _isListening,
-                    child: SizedBox(
-                      width: 150,
-                      height: 150,
-                      child: FittedBox(
-                        child: FloatingActionButton(
-                          shape: const CircleBorder(),
-                          onPressed: toggleRecording,
-                          child: Icon(
-                            _isListening ? Icons.mic : Icons.mic_none,
-                            size: 50,
-                          ),
-                        ),
-                      ),
-                    )
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-                  height: 200,
-                  child: Text(
-                    _text,
-                    style: const TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                ),
-              ],
-            )
-        )
-      ],
-    );
+    return Container();
   }
 
-  Future toggleRecording() => SpeechToTextApi.toggleRecording(
-    onResult: (text) => setState(() => _text = text),
-    onListening: (isListening) {
-      setState(() => _isListening = isListening);
-    });
+
 }
 
 
