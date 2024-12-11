@@ -10,34 +10,37 @@ class Command {
 }
 
 class Utils {
-  final FlutterTts _flutterTts = FlutterTts(); // Chuyển sang đối tượng không tĩnh
+  static final FlutterTts flutterTts = FlutterTts(); // Chuyển sang đối tượng không tĩnh
 
-  // Sửa phương thức scanText thành không tĩnh và truyền painter vào
-  Future<void> scanText(String rawText, ObjectDetectorPainter painter) async {
+
+
+  static Future<void> scanText(String rawText, String objects) async {
     final text = rawText.toLowerCase();
-    Map<String, String> objectsInfor = painter.detectedObjects;
+    // Map<String, String> objectsInfor = painter.detectedObjects;
 
     if (text.contains(Command.describe)) {
-      if (objectsInfor.isNotEmpty) {
-        // Lặp qua các key-value trong Map
-        objectsInfor.forEach((key, value) {
-          // Đọc giá trị (cột 2) của mỗi đối tượng
-          _flutterTts.speak(value); // Hoặc có thể làm gì đó với giá trị này
-        });
+      // if (objectsInfor.isNotEmpty) {
+      //   // Lặp qua các key-value trong Map
+      //   objectsInfor.forEach((key, value) {
+      //     // Đọc giá trị (cột 2) của mỗi đối tượng
+      //     flutterTts.speak(value); // Hoặc có thể làm gì đó với giá trị này
+      //   });
+      if (objects.isNotEmpty) {
+        await flutterTts.speak(objects);
       } else {
-        _flutterTts.speak("I see nothing");
+        await flutterTts.speak("I see nothing");
       }
     } else if (text.contains(Command.search)) {
       final object = _getTextAfterCommand(text: text, command: Command.search);
       // Kiểm tra xem objectToFind có trong Map không
-      if (objectsInfor.containsKey(object)) {
-        // Nếu có, lấy giá trị tương ứng và đọc
-        String info = objectsInfor[object]!;
-        _flutterTts.speak(info);
-      } else {
-        // Nếu không tìm thấy, phát một thông báo khác
-        _flutterTts.speak(object + " not found");
-      }
+      // if (objectsInfor.containsKey(object)) {
+      //   // Nếu có, lấy giá trị tương ứng và đọc
+      //   String info = objectsInfor[object]!;
+      //   flutterTts.speak(info);
+      // } else {
+      //   // Nếu không tìm thấy, phát một thông báo khác
+      //   flutterTts.speak(object + " not found");
+      // }
     }
   }
 
