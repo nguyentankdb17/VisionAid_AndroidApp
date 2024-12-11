@@ -1,5 +1,5 @@
-import 'package:speech_to_text/speech_to_text.dart';
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class SpeechToTextApi {
   static final _speechToText = SpeechToText();
@@ -9,7 +9,7 @@ class SpeechToTextApi {
     required ValueChanged<bool> onListening,
   }) async {
     if (_speechToText.isListening) {
-      _speechToText.stop();
+      await _speechToText.stop();
       return true;
     }
 
@@ -19,7 +19,7 @@ class SpeechToTextApi {
     );
 
     if (isAvailable) {
-      _speechToText.listen(onResult: (value) => onResult(value.recognizedWords));
+      await _speechToText.listen(onResult: (value) => onResult(value.recognizedWords));
     }
 
     return isAvailable;

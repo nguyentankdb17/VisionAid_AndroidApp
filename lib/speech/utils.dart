@@ -6,7 +6,7 @@ class Command {
   static final all = [describe, search];
 
   static const describe = 'describe';
-  static const search = 'search';
+  static const search = 'search for';
 }
 
 class Utils {

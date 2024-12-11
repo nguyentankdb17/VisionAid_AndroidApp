@@ -1,10 +1,9 @@
 import 'dart:async';
 
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:speech_to_text/speech_to_text.dart';
-import 'package:avatar_glow/avatar_glow.dart';
-import 'package:visionaid/speech_to_text_api.dart';
+import 'package:ultralytics_yolo/speech/speech_to_text_api.dart';
 
 
 enum TtsState { playing, stopped, paused, continued }
@@ -28,10 +27,8 @@ class _SpeechState extends State<Speech> {
   bool isCurrentLanguageInstalled = false;
 
   ///
-  // bool _speechEnabled = false;
   bool _isListening = false;
   String _text = 'Press the button and start speaking';
-  double _confidence = 1.0;
 
   TtsState ttsState = TtsState.stopped;
 
@@ -97,28 +94,6 @@ class _SpeechState extends State<Speech> {
     });
   }
 
-  Future<dynamic> _getLanguages() async => await flutterTts.getLanguages;
-
-  Future<dynamic> _getEngines() async => await flutterTts.getEngines;
-
-  void extractTargetObject(String spokenText) {
-    String tmpText = spokenText.toLowerCase();
-    String cleanedText = tmpText.replaceAll("tìm", "").trim();
-    List<String> words = cleanedText.split(" ");
-    setState(() {
-
-    });
-  }
-
-  // void onSpeechResult(result){
-  //   setState(() {
-  //     wordsSpoken = _speechToText.isListening ? "${result.recognizedWords}" : "" ;
-  //     confidenceLevel = result.confidence;
-  //   });
-  //   extractTargetObject(wordsSpoken);
-  // }
-
-
   Future<void> _getDefaultEngine() async {
     var engine = await flutterTts.getDefaultEngine;
     if (engine != null) {
@@ -153,48 +128,7 @@ class _SpeechState extends State<Speech> {
     flutterTts.stop();
   }
 
-  List<DropdownMenuItem<String>> getEnginesDropDownMenuItems(
-      List<dynamic> engines) {
-    var items = <DropdownMenuItem<String>>[];
-    for (dynamic type in engines) {
-      items.add(DropdownMenuItem(
-          value: type as String?, child: Text((type as String))));
-    }
-    return items;
-  }
-
-  void changedEnginesDropDownItem(String? selectedEngine) async {
-    await flutterTts.setEngine(selectedEngine!);
-    language = null;
-    setState(() {
-      engine = selectedEngine;
-    });
-  }
-
-  List<DropdownMenuItem<String>> getLanguageDropDownMenuItems(
-      List<dynamic> languages) {
-    var items = <DropdownMenuItem<String>>[];
-    for (dynamic type in languages) {
-      items.add(DropdownMenuItem(
-          value: type as String?, child: Text((type as String))));
-    }
-    return items;
-  }
-
-  void changedLanguageDropDownItem(String? selectedType) {
-    setState(() {
-      language = selectedType;
-      flutterTts.setLanguage(language!);
-
-      flutterTts
-          .isLanguageInstalled(language!)
-          .then((value) => isCurrentLanguageInstalled = (value as bool));
-
-    });
-  }
-
   @override
-
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
@@ -204,7 +138,6 @@ class _SpeechState extends State<Speech> {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                Text('Confidence: ${(_confidence * 100.0).toStringAsFixed(1) + _isListening.toString()}%'),
                 AvatarGlow(
                     animate: _isListening,
                     glowColor: Theme.of(context).primaryColor,
@@ -239,33 +172,6 @@ class _SpeechState extends State<Speech> {
       ],
     );
   }
-
-  // void _listen() async {
-  //   if (!_isListening) {
-  //     bool available = await _speechToText.initialize(
-  //       onStatus: (val) => print('onStatus: $val'),
-  //       onError: (val) => print('onError: $val'),
-  //     );
-  //     if (available) {
-  //       setState(() => _isListening = true);
-  //       _speechToText.listen(
-  //         onResult: (val) => setState(() {
-  //           _text = val.recognizedWords;
-  //           if (val.hasConfidenceRating && val.confidence > 0) {
-  //             _confidence = val.confidence;
-  //           }
-  //         }),
-  //       );
-  //     } else {
-  //       setState(() {
-  //         _isListening = false;
-  //       });
-  //     }
-  //   } else {
-  //     setState(() => _isListening = false);
-  //     _speechToText.stop();
-  //   }
-  // }
 
   Future toggleRecording() => SpeechToTextApi.toggleRecording(
     onResult: (text) => setState(() => _text = text),
