@@ -283,20 +283,19 @@ class _UltralyticsYoloCameraPreviewState
   }
   Widget speech() {
     return Stack(
-      alignment: Alignment.center,
+      alignment: Alignment.bottomCenter,
       children: [
         Positioned(
-            bottom: 10,
+            bottom: 0,
             child: Column(
               children: [
                 AvatarGlow(
                     animate: _isListening,
                     glowColor: Theme.of(context).primaryColor,
-                    duration: const Duration(seconds: 3),
                     repeat: _isListening,
                     child: SizedBox(
-                      width: 150,
-                      height: 150,
+                      width: 200,
+                      height: 200,
                       child: FittedBox(
                         child: FloatingActionButton(
                           shape: const CircleBorder(),
@@ -311,7 +310,7 @@ class _UltralyticsYoloCameraPreviewState
                 ),
                 Container(
                   padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-                  height: 200,
+                  height: 50,
                   child: Text(
                     _text,
                     style: const TextStyle(color: Colors.white, fontSize: 20),
