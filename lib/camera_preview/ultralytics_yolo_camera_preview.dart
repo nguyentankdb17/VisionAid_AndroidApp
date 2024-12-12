@@ -111,9 +111,12 @@ class _UltralyticsYoloCameraPreviewState
   String _text = 'Press the button and start speaking';
 
 
-  void _onPlatformViewCreated(_) {
+  Future<void> _onPlatformViewCreated(_) async {
     widget.onCameraCreated();
-    _ultralyticsYoloPlatform.setConfidenceThreshold(0.4);
+    await Future.wait([
+      TTS.flutterTts.speak('Press the button at the bottom of the screen to start speaking'),
+      _ultralyticsYoloPlatform.setConfidenceThreshold(0.4),
+    ]);
   }
 
   @override
