@@ -33,11 +33,25 @@ class ObjectDetectorPainter extends CustomPainter {
   }
 
   /// Find the relative position on the screen
-  String determinePosition(double objectX, double objectWidth, double screenWidth) {
+  String determinePosition(double objectX, double objectWidth, double objectLeft, double objectRight, double screenWidth) {
     final screenWidthHalf = screenWidth / 2;
+
+    // if the whole object is on the left
+    if (objectRight < screenWidthHalf) {
+      return 'left';
+    }
+
+    // If the whole object is on the right
+    if (objectLeft > screenWidthHalf) {
+      return 'right';
+    }
+
+    // If object occupies more than half of screen width
     if (objectWidth > 0.5 * screenWidth) {
       return 'center';
     }
+
+    // Compare the center of bounding box to center of screen
     if (objectX < screenWidthHalf) {
       return 'left';
     } else if (objectX > screenWidthHalf) {
@@ -117,7 +131,7 @@ class ObjectDetectorPainter extends CustomPainter {
       // ADD TEXT
       final objectInfo = ' ${detectedObject.label} '
           '${(detectedObject.confidence * 100).toStringAsFixed(1)} '
-          '${determinePosition(centerX, width, size.width)} '
+          '${determinePosition(centerX, width, left, right, size.width)} '
           '${estimatedDistance.toStringAsFixed(1)}cm \n';
 
       // Đọc nội dung qua Text-to-Speech

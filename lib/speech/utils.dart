@@ -7,6 +7,7 @@ class Command {
   static const search = 'find the';
 }
 
+/// Set up the flutter tts
 class TTS {
   static FlutterTts get flutterTts {
     final tts = FlutterTts();
@@ -22,15 +23,8 @@ class Utils {
 
   static Future<void> scanText(String rawText, Map<String, List<String>> objects) async {
     final text = rawText.toLowerCase();
-    // Map<String, String> objectsInfor = painter.detectedObjects;
 
     if (text.contains(Command.describe)) {
-      // if (objectsInfor.isNotEmpty) {
-      //   // Lặp qua các key-value trong Map
-      //   objectsInfor.forEach((key, value) {
-      //     // Đọc giá trị (cột 2) của mỗi đối tượng
-      //     flutterTts.speak(value); // Hoặc có thể làm gì đó với giá trị này
-      //   });
       if (objects.isNotEmpty) {
         await flutterTts.speak('There are ');
         for (final key in objects.keys) {
@@ -47,22 +41,13 @@ class Utils {
         final distance = objects[object]![0];
         final position = objects[object]![1];
         if (position=='center') {
-          await flutterTts.speak('$object is in front of you, about $distance centimeters away from you');
+          await flutterTts.speak('$object is right ahead, about $distance centimeters away from you');
         } else {
           await flutterTts.speak('$object is on your $position hand, about $distance centimeters away from you ');
         }
       } else {
         await flutterTts.speak('$object not found');
       }
-      // Kiểm tra xem objectToFind có trong Map không
-      // if (objectsInfor.containsKey(object)) {
-      //   // Nếu có, lấy giá trị tương ứng và đọc
-      //   String info = objectsInfor[object]!;
-      //   flutterTts.speak(info);
-      // } else {
-      //   // Nếu không tìm thấy, phát một thông báo khác
-      //   flutterTts.speak(object + " not found");
-      // }
     }
   }
 
