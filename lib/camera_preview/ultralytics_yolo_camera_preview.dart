@@ -78,11 +78,25 @@ class _UltralyticsYoloCameraPreviewState
   final double focalLength = 2.6;
 
   /// Find the relative position on the screen
-  String determinePosition(double objectX, double objectWidth, double screenWidth) {
+  String determinePosition(double objectX, double objectWidth, double objectLeft, double objectRight, double screenWidth) {
     final screenWidthHalf = screenWidth / 2;
+
+    // if the whole object is on the left
+    if (objectRight < screenWidthHalf) {
+      return 'left';
+    }
+
+    // If the whole object is on the right
+    if (objectLeft > screenWidthHalf) {
+      return 'right';
+    }
+
+    // If object occupies more than half of screen width
     if (objectWidth > 0.5 * screenWidth) {
       return 'center';
     }
+
+    // Compare the center of bounding box to center of screen
     if (objectX < screenWidthHalf) {
       return 'left';
     } else if (objectX > screenWidthHalf) {
@@ -97,9 +111,12 @@ class _UltralyticsYoloCameraPreviewState
   String _text = 'Press the button and start speaking';
 
 
-  void _onPlatformViewCreated(_) {
+  Future<void> _onPlatformViewCreated(_) async {
     widget.onCameraCreated();
-    _ultralyticsYoloPlatform.setConfidenceThreshold(0.4);
+    await Future.wait([
+      TTS.flutterTts.speak('Press the button at the bottom of the screen to start speaking'),
+      _ultralyticsYoloPlatform.setConfidenceThreshold(0.4),
+    ]);
   }
 
   @override
@@ -172,24 +189,6 @@ class _UltralyticsYoloCameraPreviewState
                       );
                     },
                   );
-                // case ImageClassifier:
-                //   return widget.classificationOverlay ??
-                //       StreamBuilder(
-                //         stream: (widget.predictor! as ImageClassifier)
-                //             .classificationResultStream,
-                //         builder: (context, snapshot) {
-                //           final classificationResults = snapshot.data;
-                //
-                //           if (classificationResults == null ||
-                //               classificationResults.isEmpty) {
-                //             return Container();
-                //           }
-                //
-                //           return ClassificationResultOverlay(
-                //             classificationResults: classificationResults,
-                //           );
-                //         },
-                //       );
                 default:
                   return Container();
               }
@@ -251,26 +250,8 @@ class _UltralyticsYoloCameraPreviewState
                   focalLengthCm: focalLength,
                 );
 
-                final objectInfo = '${detectedObject.label}'
-                    ' and ${estimatedDistance.toStringAsFixed(0)}';
-
-                // // Kiểm tra xem đối tượng này đã được phát hiện trước đó chưa
-                // if (_previousDetectedObjects.containsKey(detectedObject)) {
-                //   // Nếu đã tồn tại và thông tin thay đổi, thì cập nhật lại
-                //   if (_previousDetectedObjects[detectedObject.label] != objectInfo) {
-                //     // Cập nhật thông tin mới
-                //     _previousDetectedObjects[detectedObject.label] = objectInfo;
-                //     // Đọc lại thông tin mới
-                //     //_flutterTts.speak(objectInfo);
-                //   }
-                // } else {
-                //   // Nếu đối tượng chưa được phát hiện trước đó, thêm vào map và đọc thông tin
-                //   _previousDetectedObjects[detectedObject.label] = objectInfo;
-                //   //_flutterTts.speak(objectInfo);
-                // }
-
-                // Gom tất cả các mô tả vào chuỗi
-                detectedObjects[detectedObject.label] = [estimatedDistance.toStringAsFixed(0), determinePosition(centerX, width, MediaQuery.of(context).size.width)];
+                // Add all detected objects to map
+                detectedObjects[detectedObject.label] = [estimatedDistance.toStringAsFixed(0), determinePosition(centerX, width, left, right, MediaQuery.of(context).size.width)];
               }
 
               Utils.scanText(_text, detectedObjects);
